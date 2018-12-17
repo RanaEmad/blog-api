@@ -44,12 +44,14 @@ class Input{
         if($value && $value!=""){
             return TRUE;
         }
+        $this->error="The $this->field field is required";
         return FALSE;
     }
     public function numeric($value){
         if(is_numeric($value)){
             return TRUE;
         }
+        $this->error="The $this->field field must be numeric";
         return FALSE;
     }
     
