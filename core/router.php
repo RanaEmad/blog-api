@@ -7,7 +7,7 @@ class Router{
     }
     public function get_method(){
         $request_method=$_SERVER["REQUEST_METHOD"];
-        $url = explode('/', trim($_SERVER["REQUEST_URI"]));
+        $url = explode('/', trim(parse_url($_SERVER["REQUEST_URI"])["path"]));
         $method="";
         if(count($url)>2){
             $method=$url[2];
