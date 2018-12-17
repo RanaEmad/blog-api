@@ -1,11 +1,36 @@
 <?php
-
+require_once 'core/input.php';
 class Blog {
     protected $db;
     protected $response;
+    protected $input;
     public function __construct($db){
         $this->db=$db;
+        $this->input=new Input();
         $this->response['result']="success";
+    }
+    public function create(){
+        if($this->authenticate()){
+            $title=$this->input->post("title",array("required"));
+            if(!$title["result"]){
+                $this->response["result"]="fail";
+                $this->response["errors"]=$title['error'];
+                return json_encode($this->response);
+            }
+            $text=$this->input->post("text",array("required"));
+            if(!$text["result"]){
+                $this->response["result"]="fail";
+                $this->response["errors"]=$title['error'];
+                return json_encode($this->response);
+            }
+            $data=array(
+                "title"=>$title["value"],
+                "text"=>$text["value"],
+                "deleted"=>0
+            );
+            $this->db->insert($data);
+        }
+        return json_encode($this->response);
     }
     public function get_all(){
         $all= $this->db->get_all();
