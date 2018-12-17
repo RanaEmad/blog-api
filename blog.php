@@ -38,9 +38,14 @@ class Blog {
         return json_encode($this->response);
     }
     public function get_one(){
-        if(!empty($_GET["id"]) && is_numeric($_GET["id"])){
-            $id=$_GET['id'];
-            $one= $this->db->get_one($id);
+        if(!empty($_GET["id"])){
+            $id=  $this->input->get("id");
+            if(!$id["result"]){
+                $this->response["result"]="fail";
+                $this->response["errors"]=$id["error"];
+                return json_encode($this->response);
+            }
+            $one= $this->db->get_one($id["value"]);
             if(!empty($one)){
                 $this->response['data']=  json_encode($one);
             }
