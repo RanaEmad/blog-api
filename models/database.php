@@ -62,5 +62,12 @@ class Database{
         $stmt = $this->db->prepare($query);
         $stmt->execute();
     }
+    public function get_user($username){
+        $query = "SELECT * FROM credentials WHERE username=".$username." ;";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        $result=$stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
     
 }
