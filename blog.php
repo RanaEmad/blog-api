@@ -102,6 +102,27 @@ class Blog {
         }
         return json_encode($this->response);
     }
+    public function delete(){
+        if($this->authenticate()){
+            $id=  $this->input->parse("id",array("required","numeric"));
+            if($id['result']){
+                $id=$id['value'];
+                $one= $this->db->get_one($id);
+                if(!empty($one)){
+                    $this->db->soft_delete($id);
+                }
+                else{
+                    $this->response['result']="fail";
+                    $this->response['errors']="Record not found";
+                }
+            }
+            else{
+                $this->response['result']="fail";
+                $this->response['errors']="Missing or Invalid Parameters";
+            }
+        }
+        echo json_encode($this->response);
+    }
     protected function authenticate(){
         if(!empty($_SERVER["PHP_AUTH_USER"]) && !empty($_SERVER["PHP_AUTH_PW"])){
             $username=$_SERVER["PHP_AUTH_USER"];
