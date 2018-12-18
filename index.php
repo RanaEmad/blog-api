@@ -10,6 +10,7 @@ if($method){
     echo $blog->{$router->get_method()}();
 }
 else{
+    header('Content-Type: application/json');
     $response['result']="fail";
     $response['errors']="Requested url is not found";
     echo json_encode($response);

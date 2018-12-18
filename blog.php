@@ -7,21 +7,16 @@ class Blog {
     public function __construct($db){
         $this->db=$db;
         $this->input=new Input();
-        $this->response['result']="success";
     }
     public function create(){
         if($this->authenticate()){
             $title=$this->input->post("title",array("required"));
             if(!$title["result"]){
-                $this->response["result"]="fail";
-                $this->response["errors"]=$title['error'];
-                return json_encode($this->response);
+                return $this->respond_fail($title['error']);
             }
             $text=$this->input->post("text",array("required"));
             if(!$text["result"]){
-                $this->response["result"]="fail";
-                $this->response["errors"]=$title['error'];
-                return json_encode($this->response);
+                return $this->respond_fail($text['error']);
             }
             $data=array(
                 "title"=>$title["value"],
@@ -29,8 +24,9 @@ class Blog {
                 "deleted"=>0
             );
             $this->db->insert($data);
+            return $this->respond_success();
         }
-        return json_encode($this->response);
+        return $this->respond_fail("Authentication failed");
     }
     public function update(){
         if($this->authenticate()){
@@ -49,19 +45,21 @@ class Blog {
                     }
                     if($data){
                      $this->db->update($id,$data);   
+                     return $this->respond_success();
+                    }
+                    else{
+                        return $this->respond_fail("No data to be updated");
                     }
                 }
                 else{
-                    $this->response['result']="fail";
-                    $this->response['errors'][]="Record not found";
+                    return $this->respond_fail("Record not found");
                 }
             }
             else{
-                $this->response['result']="fail";
-                $this->response['errors']=$id['error'];
+                return $this->respond_fail($id['error']);
             }
         }
-        echo json_encode($this->response);
+        return $this->respond_fail("Authentication Failed");
     }
     public function get_all(){
         $all= $this->db->get_all();
@@ -72,16 +70,13 @@ class Blog {
                 "text"=>htmlspecialchars($one["text"])
             );
         }
-        $this->response['data']=  json_encode($blogs);
-        return json_encode($this->response);
+        return $this->respond_success($blogs);
     }
     public function get_one(){
         if(!empty($_GET["id"])){
             $id=  $this->input->get("id");
             if(!$id["result"]){
-                $this->response["result"]="fail";
-                $this->response["errors"]=$id["error"];
-                return json_encode($this->response);
+                return $this->respond_fail($id['error']);
             }
             $one= $this->db->get_one($id["value"]);
             if(!empty($one)){
@@ -89,18 +84,15 @@ class Blog {
                     "title"=>  htmlspecialchars($one["title"]),
                     "text"=>  htmlspecialchars($one["text"])
                 );
-                $this->response['data']=  json_encode($blog);
+                return $this->respond_success($blog);
             }
             else{
-                $this->response['result']="fail";
-                $this->response['errors']="Record not found";
+                return $this->respond_fail("Record not found");
             }
         }
         else{
-            $this->response['result']="fail";
-            $this->response['errors']="Missing or Invalid Parameters";
+            return $this->respond_fail("Missing or Invalid Parameters");
         }
-        return json_encode($this->response);
     }
     public function delete(){
         if($this->authenticate()){
@@ -110,18 +102,17 @@ class Blog {
                 $one= $this->db->get_one($id);
                 if(!empty($one)){
                     $this->db->soft_delete($id);
+                    return $this->respond_success();
                 }
                 else{
-                    $this->response['result']="fail";
-                    $this->response['errors']="Record not found";
+                    return $this->respond_fail("Record not found");
                 }
             }
             else{
-                $this->response['result']="fail";
-                $this->response['errors']="Missing or Invalid Parameters";
+                return $this->respond_fail("Missing or Invalid Parameters");
             }
         }
-        echo json_encode($this->response);
+        return $this->respond_fail("Authentication Failed");
     }
     protected function authenticate(){
         if(!empty($_SERVER["PHP_AUTH_USER"]) && !empty($_SERVER["PHP_AUTH_PW"])){
@@ -134,15 +125,21 @@ class Blog {
                     return TRUE;
                 }
             }
-            else{
-                $this->response['result']="fail";
-                $this->response['errors']="Authentication failed";
-            }
-        }
-        else{
-            $this->response['result']="fail";
-            $this->response['errors']="Authentication failed";
         }
         return FALSE;
+    }
+    protected function respond_success($data=NULL){
+        header('Content-Type: application/json');
+        $this->response['result']="success";
+        if($data){
+            $this->response['data']=$data;
+        }
+        return json_encode($this->response);
+    }
+    protected function respond_fail($errors){
+        header('Content-Type: application/json');
+        $this->response['result']="fail";
+        $this->response['errors']=$errors;
+        return json_encode($this->response);
     }
 }
