@@ -34,7 +34,7 @@ class Database{
     public function update($id,$data){
         $set="";
         foreach ($data as $key=>$value){
-            $set.=$key."=".$value.",";
+            $set.=$key."='".$value."',";
         }
         $set= substr($set, 0,-1);
         $query = "UPDATE ".$this->table." SET ".$set." WHERE id=".$id." ;";

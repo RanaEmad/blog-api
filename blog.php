@@ -32,13 +32,44 @@ class Blog {
         }
         return json_encode($this->response);
     }
+    public function update(){
+        if($this->authenticate()){
+            $id=$this->input->parse("id",array("required","numeric"));
+            if($id["result"]){
+                $id=  $id['value'];
+                $one= $this->db->get_one($id);
+                if(!empty($one)){
+                    $data=[];
+                    parse_str(file_get_contents("php://input"),$parsed_vars);
+                    if(!empty($parsed_vars["title"])){
+                        $data["title"]=  htmlspecialchars(trim($parsed_vars["title"]));
+                    }
+                    if(!empty($parsed_vars["text"])){
+                        $data["text"]=  htmlspecialchars(trim($parsed_vars["text"]));
+                    }
+                    if($data){
+                     $this->db->update($id,$data);   
+                    }
+                }
+                else{
+                    $this->response['result']="fail";
+                    $this->response['errors'][]="Record not found";
+                }
+            }
+            else{
+                $this->response['result']="fail";
+                $this->response['errors']=$id['error'];
+            }
+        }
+        echo json_encode($this->response);
+    }
     public function get_all(){
         $all= $this->db->get_all();
         $blogs=[];
         foreach ($all as $one){
             $blogs[]=array(
-                "title"=>$one["title"],
-                "text"=>$one["text"]
+                "title"=>htmlspecialchars($one["title"]),
+                "text"=>htmlspecialchars($one["text"])
             );
         }
         $this->response['data']=  json_encode($blogs);
@@ -54,7 +85,11 @@ class Blog {
             }
             $one= $this->db->get_one($id["value"]);
             if(!empty($one)){
-                $this->response['data']=  json_encode($one);
+                $blog=array(
+                    "title"=>  htmlspecialchars($one["title"]),
+                    "text"=>  htmlspecialchars($one["text"])
+                );
+                $this->response['data']=  json_encode($blog);
             }
             else{
                 $this->response['result']="fail";
@@ -80,9 +115,13 @@ class Blog {
             }
             else{
                 $this->response['result']="fail";
-                $this->response['errors'][]="Authentication failed";
+                $this->response['errors']="Authentication failed";
             }
-            return FALSE;
         }
+        else{
+            $this->response['result']="fail";
+            $this->response['errors']="Authentication failed";
+        }
+        return FALSE;
     }
 }
