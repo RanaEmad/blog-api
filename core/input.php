@@ -40,6 +40,30 @@ class Input{
         $response["value"]=$value;
         return $response;
     }
+    public function parse($field, $validations=NULL){
+        parse_str(file_get_contents("php://input"),$parsed_vars);
+        if(!empty($parsed_vars[$field])){
+            $response["result"]=TRUE;
+            $this->field=$field;
+            $value= htmlspecialchars(trim($parsed_vars[$field]));
+            if($validations){
+                foreach ($validations as $one){
+                    $valid=$this->{$one}($value);
+                    if(!$valid){
+                        $response["result"]=FALSE;
+                        $response["error"]=  $this->error;
+                        return $response;
+                    }
+                }
+            }
+            $response["value"]=$value;
+        }
+        else{
+            $response["result"]=FALSE;
+            $response["error"]=  "Missing or Invalid Parameters";
+        }
+        return $response;
+    }
     public function required($value){
         if($value && $value!=""){
             return TRUE;
