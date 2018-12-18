@@ -34,7 +34,14 @@ class Blog {
     }
     public function get_all(){
         $all= $this->db->get_all();
-        $this->response['data']=  json_encode($all);
+        $blogs=[];
+        foreach ($all as $one){
+            $blogs[]=array(
+                "title"=>$one["title"],
+                "text"=>$one["text"]
+            );
+        }
+        $this->response['data']=  json_encode($blogs);
         return json_encode($this->response);
     }
     public function get_one(){

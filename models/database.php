@@ -45,10 +45,7 @@ class Database{
         $query = "SELECT * FROM ". $this->table." WHERE id=".$id." and deleted!=1 ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        $result=$stmt->fetchAll(PDO::FETCH_ASSOC);
-        if(!empty($result[0])){
-            return $result[0];
-        }
+        $result=$stmt->fetch(PDO::FETCH_ASSOC);
         return $result;
     }
     public function get_all(){
