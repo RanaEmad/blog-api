@@ -69,22 +69,13 @@ class Blog {
     }
     protected function authenticate(){
         if(!empty($_SERVER["PHP_AUTH_USER"]) && !empty($_SERVER["PHP_AUTH_PW"])){
-            $auth_user=$_SERVER["PHP_AUTH_USER"];
-            $auth_pass=  base64_decode($_SERVER["PHP_AUTH_PW"]);
-            $auth_pass=  explode(":", $auth_pass);
-            if($auth_user=="Basic" && count($auth_pass)>1){
-                $username=$auth_pass[0];
-                $password=$auth_pass[1];
-                $user= $this->db->get_user($username);
-                if(!empty($user)){
-                    $user_password= base64_encode($user["username"].$user["token"].$user["username"]);
-                    if($user_password==$password){
-                        return TRUE;
-                    }
-                }
-                else{
-                    $this->response['result']="fail";
-                    $this->response['errors'][]="Authentication failed";
+            $username=$_SERVER["PHP_AUTH_USER"];
+            $password=  $_SERVER["PHP_AUTH_PW"];
+            $user= $this->db->get_user($username);
+            if(!empty($user)){
+                $user_password= base64_encode($user["username"].$user["token"].$user["username"]);
+                if($user_password==$password){
+                    return TRUE;
                 }
             }
             else{

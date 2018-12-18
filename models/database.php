@@ -23,7 +23,7 @@ class Database{
         $values=[];
         foreach ($data as $key=>$value){
             $keys[]=$key;
-            $values[]=$value;
+            $values[]="'".$value."'";
         }
         $keys=  implode(",", $keys);
         $values=  implode(",", $values);
@@ -60,7 +60,7 @@ class Database{
         $stmt->execute();
     }
     public function get_user($username){
-        $query = "SELECT * FROM credentials WHERE username=".$username." ;";
+        $query = "SELECT * FROM credentials WHERE username='".$username."' ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $result=$stmt->fetch(PDO::FETCH_ASSOC);
