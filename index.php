@@ -1,13 +1,17 @@
 <?php
 require_once 'models/database.php';
-require_once 'blog.php';
+require_once 'api.php';
 require_once 'core/router.php';
-$db= new Database($db_config,"articles");
-$blog= new Blog($db);
+require_once 'helpers/log_helper.php';
+//$db= new Database($db_config,"articles");
+//$blog= new Blog($db);
+//echo base64_encode("admin123456admin");die;
+//YWRtaW4xMjM0NTZhZG1pbg==
+$api= new Api($db_config);
 $router= new Router($routes);
 $method= $router->get_method();
 if($method){
-    echo $blog->{$router->get_method()}();
+    echo $api->{$router->get_method()}();
 }
 else{
     header('Content-Type: application/json');

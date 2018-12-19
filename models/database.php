@@ -1,12 +1,19 @@
 <?php
 require_once 'config/db_config.php';
+require_once 'helpers/log_helper.php';
 class Database{
-    private $db_config;
-    private $db;
-    private $table;
+    protected $db_config;
+    protected $db;
+    protected $table;
     public function __construct($db_config,$table) {
         $this->db_config=$db_config;
         $this->connect();
+        $this->table=$table;
+    }
+    public function get_table(){
+        return $this->table;
+    }
+    public function set_table($table){
         $this->table=$table;
     }
     public function connect(){
@@ -14,7 +21,10 @@ class Database{
         try{
             $this->db = new PDO("mysql:host=" . $this->db_config['host'] . ";dbname=" . $this->db_config['db_name'], $this->db_config['username'], $this->db_config['password']);
         }catch(PDOException $exception){
-            echo "Connection error: " . $exception->getMessage();
+            $response['result']="fail";
+            $response['errors']= "Database connection error: " . $exception->getMessage();
+            log_actions($this->db_config, $response['errors']);
+            echo json_encode($response);
             die;
         }
     }
@@ -30,6 +40,7 @@ class Database{
         $query = "INSERT INTO ".$this->table." (".$keys.") VALUES (".$values.") ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
+        return $this->db->lastInsertId();
     }
     public function update($id,$data){
         $set="";
