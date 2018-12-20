@@ -20,6 +20,7 @@ class Api {
         $this->log_data["function"]=__FUNCTION__;
         if($this->authenticate()){
             $title=$this->input->post("title",array("required","max_length"));
+            //check parameters validation
             if(!$title["result"]){
                 return $this->respond_fail($title['error']);
             }
@@ -45,6 +46,7 @@ class Api {
             if($id["result"]){
                 $id=  $id['value'];
                 $this->log_data["id"]=$id;
+                //check record's existence
                 $one= $this->blog->get_one($id);
                 if(!empty($one)){
                     $data=[];
@@ -108,6 +110,7 @@ class Api {
             if($id['result']){
                 $id=$id['value'];
                 $this->log_data["id"]=$id;
+                //check record's exitence
                 $one= $this->blog->get_one($id);
                 if(!empty($one)){
                     $this->blog->soft_delete($id);
@@ -138,6 +141,8 @@ class Api {
             $password=  $_SERVER["PHP_AUTH_PW"];
             $user= $auth_model->get_user($username);
             if(!empty($user)){
+                //assuming the token is a uniqueid generated for each username and the username is unique
+                // the password is the encoding of the concatination of the username, the token and the username again
                 $user_password= base64_encode($user["username"].$user["token"].$user["username"]);
                 if($user_password==$password){
                     return TRUE;
@@ -155,6 +160,7 @@ class Api {
         elseif($this->log_data["function"]=="get_all"){
             $this->response['data']=[];
         }
+        //logging the data for each successful call
         $log_action= $this->log_data["function"]." enpoint was executed successfully";
         if($this->log_data["id"]){
             $log_action .=" for record with id: ".$this->log_data["id"];
@@ -166,6 +172,7 @@ class Api {
         header('Content-Type: application/json');
         $this->response['result']="fail";
         $this->response['errors']=$errors;
+        //logging the data for each successful call
         $log_action= $this->log_data["function"]." enpoint failed to execute with error: $errors";
         if($this->log_data["id"]){
             $log_action .=" for record with id: ".$this->log_data["id"];

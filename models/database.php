@@ -1,6 +1,9 @@
 <?php
 require_once 'config/db_config.php';
 require_once 'helpers/log_helper.php';
+/**
+ * Database class has all the basic database queries and connection
+ */
 class Database{
     protected $db_config;
     protected $db;
@@ -30,6 +33,7 @@ class Database{
     public function insert($data){
         $keys=[];
         $values=[];
+        //create custom columns and values strings for dynamic insertion
         foreach ($data as $key=>$value){
             $keys[]=$key;
             $values[]="'".$value."'";
@@ -43,6 +47,7 @@ class Database{
     }
     public function update($id,$data){
         $set="";
+        //create custom set string for dynamic update
         foreach ($data as $key=>$value){
             $set.=$key."='".$value."',";
         }
@@ -74,13 +79,6 @@ class Database{
         $query = "UPDATE ".$this->table." SET deleted=1 WHERE id=".$id." ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-    }
-    public function get_user($username){
-        $query = "SELECT * FROM credentials WHERE username='".$username."' ;";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        $result=$stmt->fetch(PDO::FETCH_ASSOC);
-        return $result;
     }
     
 }

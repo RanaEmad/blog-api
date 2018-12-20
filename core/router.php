@@ -1,5 +1,8 @@
 <?php
 require 'config/routes.php';
+/**
+ * Router class parses the url and calls the corresponding endpoint
+ */
 class Router{
     private $routes;
     public function __construct($routes) {

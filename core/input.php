@@ -1,4 +1,7 @@
 <?php
+/**
+ * Input class to parse and validate input according to requested method
+ */
 class Input{
     protected $field;
     protected $error;

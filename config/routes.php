@@ -1,5 +1,5 @@
 <?php
-
+//allowed system routes
 $routes["GET"]["get_all"]="get_all";
 $routes["GET"]["get_one"]="get_one";
 $routes["POST"]["create"]="create";

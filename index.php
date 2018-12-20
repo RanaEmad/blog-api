@@ -3,8 +3,7 @@ require_once 'models/database.php';
 require_once 'api.php';
 require_once 'core/router.php';
 require_once 'helpers/log_helper.php';
-//echo base64_encode("admin123456admin");die;
-//YWRtaW4xMjM0NTZhZG1pbg==
+//Api start point
 $api= new Api($db_config);
 $router= new Router($routes);
 $method= $router->get_method();

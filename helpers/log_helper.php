@@ -1,5 +1,8 @@
 <?php
 require_once 'models/database.php';
+/**
+ * Inserts all system logs in the database 
+ */
 function log_actions($db_config,$action,$username=NULL){
     $data=array(
     "remote_addr"=>$_SERVER["REMOTE_ADDR"],
