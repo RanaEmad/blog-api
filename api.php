@@ -143,6 +143,9 @@ class Api {
         if($data){
             $this->response['data']=$data;
         }
+        elseif($this->log_data["function"]=="get_all"){
+            $this->response['data']=[];
+        }
         $log_action= $this->log_data["function"]." enpoint was executed successfully";
         if($this->log_data["id"]){
             $log_action .=" for record with id: ".$this->log_data["id"];
