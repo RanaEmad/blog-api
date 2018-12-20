@@ -2,18 +2,15 @@
 A challenge task to create a simple blog API using PHP by Shopbox
 
 # Installation  
-- Download the vagrant box blog-api.box from this link: https://app.vagrantup.com/RanaEmad/boxes/blog-api
-- Add the vagrant box and initialize by running the following commands:
-```
-vagrant box add blog-api.box --name <yourappname>_box
-vagrant init <yourappname>_box
-vagrant up
-```
-- Call the endpoints using the url: http://blog.api/<the enpoint's name>
+- Clone this repository
+- Clone the vagrant environment located in https://github.com/RanaEmad/puphpet-blog-api
+- Update the config.yaml located in pm7kRM/puphpet/config.yaml in the vagrant environment with the source folder for this repository
+  ```source: 'C:/xampp/htdocs/blog-api' ```
+- Run ```vagrant up``` in pm7kRM
 
 OR
 
-- Clone this repository in your server's foler  
+- Clone this repository in your server's folder  
 - Import the blog-api.sql file located in resources/blog-api.sql in your database  
 - Update the db_config.php file located in config/db_config.php with the correct database configuration settings  
 - Use the instructions and parameters listed in the Endpoints section to call each endpoint
