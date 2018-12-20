@@ -19,7 +19,7 @@ class Api {
     public function create(){
         $this->log_data["function"]=__FUNCTION__;
         if($this->authenticate()){
-            $title=$this->input->post("title",array("required"));
+            $title=$this->input->post("title",array("required","max_length"));
             if(!$title["result"]){
                 return $this->respond_fail($title['error']);
             }
@@ -50,7 +50,10 @@ class Api {
                     $data=[];
                     parse_str(file_get_contents("php://input"),$parsed_vars);
                     if(!empty($parsed_vars["title"])){
-                        $data["title"]=  htmlspecialchars(trim($parsed_vars["title"]));
+                        $data["title"]= $this->input->parse("title",array("max_length"));
+                        if(!$data['title']['result']){
+                            return $this->respond_fail($data['title']['error']);
+                        }
                     }
                     if(!empty($parsed_vars["text"])){
                         $data["text"]=  htmlspecialchars(trim($parsed_vars["text"]));

@@ -78,5 +78,13 @@ class Input{
         $this->error="The $this->field field must be numeric";
         return FALSE;
     }
+    public function max_length($value){
+        $len=200;
+        if(strlen($value)<=$len){
+            return TRUE;
+        }
+        $this->error="The maximum allowed no of characters for the $this->field field is $len";
+        return FALSE;
+    }
     
 }
