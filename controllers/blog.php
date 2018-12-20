@@ -15,6 +15,7 @@ class Blog{
         $blogs=[];
         foreach ($all as $one){
             $blogs[]=array(
+                "id"=>$one["id"],
                 "title"=>htmlspecialchars($one["title"]),
                 "text"=>htmlspecialchars($one["text"])
             );

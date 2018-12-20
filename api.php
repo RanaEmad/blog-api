@@ -56,6 +56,7 @@ class Api {
                         if(!$data['title']['result']){
                             return $this->respond_fail($data['title']['error']);
                         }
+                        $data["title"]=$data["title"]["value"];
                     }
                     if(!empty($parsed_vars["text"])){
                         $data["text"]=  htmlspecialchars(trim($parsed_vars["text"]));
