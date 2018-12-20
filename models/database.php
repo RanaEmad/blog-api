@@ -23,7 +23,6 @@ class Database{
         }catch(PDOException $exception){
             $response['result']="fail";
             $response['errors']= "Database connection error: " . $exception->getMessage();
-            log_actions($this->db_config, $response['errors']);
             echo json_encode($response);
             die;
         }
@@ -61,6 +60,12 @@ class Database{
     }
     public function get_all(){
         $query = "SELECT * FROM ". $this->table." WHERE deleted!=1 ;";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    public function get_all_hard(){
+        $query = "SELECT * FROM ". $this->table." ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

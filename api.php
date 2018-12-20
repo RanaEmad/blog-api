@@ -120,6 +120,12 @@ class Api {
         }
         return $this->respond_fail("Authentication Failed");
     }
+    public function get_logs(){
+        $this->log_data["function"]=__FUNCTION__;
+        $log_model= new Database($this->db_config,"logs");
+        $logs= $log_model->get_all_hard();
+        return $this->respond_success($logs);
+    }
     protected function authenticate(){
         if(!empty($_SERVER["PHP_AUTH_USER"]) && !empty($_SERVER["PHP_AUTH_PW"])){
             require_once 'models/auth_model.php';
