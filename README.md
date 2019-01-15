@@ -1,5 +1,5 @@
 # Blog API
-A challenge task to create a simple blog API using PHP by Shopbox
+A challenge task to create a simple blog API using PHP
 
 # Installation  
 - Clone this repository
